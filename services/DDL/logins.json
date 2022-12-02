@@ -1,0 +1,33 @@
+[{
+  "_id": {
+    "$oid": "62eae2099b4e00e374c1676a"
+  },
+  "username": "gumby",
+  "email": "gumby@gmail.com",
+  "password": "$2b$10$sJSOhiuqxe55thtiIft9h.eMWVj3JLbuF9DRsnzDsLxQu6qVuv/Oe",
+  "uuid": "5f139caf-9dc7-4ad3-adbe-cb7503fd0c2d"
+},{
+  "_id": {
+    "$oid": "62eae2199b4e00e374c1676b"
+  },
+  "username": "bubba",
+  "email": "bubba@gmail.com",
+  "password": "$2b$10$qG.1LOxFSEhu0C02jL3rZ.ZCNJXufc3m0dCEeQti8NR/8KY17NjGu",
+  "uuid": "363cd0c3-cc3b-402d-b9f7-a419671e087a"
+},{
+  "_id": {
+    "$oid": "62ebc444bf475121e0aaf2d6"
+  },
+  "username": "pokey",
+  "email": "pokey@gmail.com",
+  "password": "$2b$10$LsHd.6qu4wZ57zq6bbtLSuk85no3M6qh1UAC8pZYu81TH9IZm0Ahe",
+  "uuid": "79832880-019f-40fe-9cac-15f166a2a37e"
+},{
+  "_id": {
+    "$oid": "62ec00e3dc7d9dd579cfe2f2"
+  },
+  "username": "goose",
+  "email": "goose@goose",
+  "password": "$2b$10$Bu/geKlXGaVcJRnXGJBrK.On/EQUoxo9OqxylHWCPMUPDJ/El7/1u",
+  "uuid": "48153535-af2f-4cec-9bf7-1eefc22a2baa"
+}]
