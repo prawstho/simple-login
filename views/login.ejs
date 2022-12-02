@@ -1,0 +1,20 @@
+<html lang="en">
+    <%- include('./partials/header.ejs') %>
+    <body>
+        <%- include('./partials/nav.ejs') %>
+		<div class="login">
+			<h1>Login</h1>
+			<form action="/auth" method="post">
+				<label for="username"></label>
+				<input type="text" name="username" placeholder="Username" id="username" required></br>
+				<label for="password"></label>
+				<input type="password" name="password" placeholder="Password" id="password" required></br>
+				<input type="submit" value="Login">
+			</form>
+        </div>
+		<%- include('./partials/status.ejs') %>
+		</br>
+        <%- include('./partials/auth.ejs') %>
+    </body>
+    <%- include('./partials/footer.ejs') %>
+</html>
