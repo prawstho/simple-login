@@ -30,7 +30,7 @@ app.get('/about', async (req, res) => {
 });
 
 const authRouter = require('./routes/auth')
-app.use('/auth', authRouter);
+app.use("/auth", authRouter);
 
 app.use((req, res) => {
     res.status(404).render('404', {status: app.locals.status});

@@ -32,7 +32,7 @@ async function getLoginByEmail(email) {
 async function getLoginById(id) {
   try {
     await dal.connect();
-    const result = dal.db("Auth").collection("logins").findOne({ _id: ObjectId(id) });
+    const result = dal.db("Auth").collection("logins").findOne({ _id: new ObjectId(id) });
     return result;
   } catch(error) {
     console.log(error);
