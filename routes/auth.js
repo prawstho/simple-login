@@ -4,6 +4,7 @@ const uuid = require('uuid');
 const router = express.Router();
 
 const { addLogin, getLoginByUsername } = require('../services/p.auth.dal')
+// const { addLogin, getLoginByUsername } = require('../services/m.auth.dal')
 
 router.use(express.static('public'));
 
@@ -16,10 +17,11 @@ router.post('/', async (req, res) => {
     try {
         if(DEBUG) console.log('auth.getLoginByUsername().try');
         let user = await getLoginByUsername(req.body.username);
-        if(DEBUG) console.log(user);
         if(user === undefined) {
             req.app.locals.status = 'Incorrect user name was entered.'
             res.redirect('/auth')
+        } else {
+            if(DEBUG) console.log('user not found.');
         }
         if( await bcrypt.compare(req.body.password, user.password)) {
             // change using app.locals to use session or java web token (jwt)
@@ -73,6 +75,8 @@ router.post('/new', async (req, res) => {
 
 router.get('/exit', async (req, res) => {
     if(DEBUG) console.log('get /exit');
+    // clear out the express-session
+    req.app.locals.status = ' ';
     res.redirect('/');
 });
 
