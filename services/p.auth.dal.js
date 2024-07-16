@@ -13,6 +13,7 @@ async function getLoginByUsername(username) {
   let SQL = `SELECT * FROM public."Logins" WHERE username = $1`;
   try {
     let results = await dal.query(SQL, [username]);
+    if(DEBUG) console.log(`results after query: ${results.rows[0]}`);
     return results.rows[0];
   } catch (error) {
     console.log(error);
@@ -44,7 +45,7 @@ async function addLogin(name, email, password, uuidv4) {
     return results.rows[0].id;
   } catch (error) {
     if(error.code === '23505') // duplicate username
-      return error.code;
+      return error;
     console.log(error);
   } 
 };
