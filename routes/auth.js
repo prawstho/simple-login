@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const router = express.Router();
 
-const { addLogin, getLoginByUsername } = require('../services/p.auth.dal')
-// const { addLogin, getLoginByUsername } = require('../services/m.auth.dal')
+// const { addLogin, getLoginByUsername } = require('../services/p.auth.dal')
+const { addLogin, getLoginByUsername } = require('../services/m.auth.dal')
 
 router.use(express.static('public'));
 
@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
         if(DEBUG) console.log('auth.getLoginByUsername().try');
         let user = await getLoginByUsername(req.body.username);
         if(DEBUG) console.log(`user data: ${user}`);
-        if(user === undefined) {
+        if(user === undefined || user === null) {
             req.app.locals.status = 'Incorrect user name was entered.'
             if(DEBUG) console.log(req.app.locals.status);
             res.redirect('/auth');
@@ -59,12 +59,25 @@ router.post('/new', async (req, res) => {
             if(DEBUG) console.log('result: ' + result);
             // duplicate username, comes from uniqueness constraint 
             // in postgresql(err.code=23505) OR mongodb(err.code=11000)
-            if(result.code === "23505" || result === 11000) {
+            if(result.code === "23505" || result.code === 11000) {
                 let constraint;
-                if(result.constraint === "unique_username") 
-                    constraint = "Username";
-                if(result.constraint === "unique_email") 
-                    constraint = "Email address";
+                function setConstraint(indexName) {
+                    const constraintsMap = {
+                        "unique_username": "Username",
+                        "unique_email": "Email address"
+                    };
+                    return constraintsMap[indexName] || indexName; // Default to indexName if not found
+                }
+                
+                if (result.code === "23505") { // PostgreSQL unique violation
+                    constraint = setConstraint(result.constraint);
+                } else if (result.code === 11000) { // MongoDB duplicate key error
+                    if (DEBUG) console.log(result.errmsg);
+                    const match = result.errmsg.match(/index: (\w+)/);
+                    const indexName = match ? match[1] : 'unknown';
+                    if (DEBUG) console.log(`Duplicate key error for index: ${indexName}`);
+                    constraint = setConstraint(indexName);
+                }
                 if(DEBUG) console.log(`${constraint} already exists, please try another.`);
                 req.app.locals.status = `${constraint} already exists, please try another.`
                 res.redirect('/auth/new')
