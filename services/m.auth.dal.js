@@ -47,7 +47,7 @@ async function addLogin(name, email, password, uuidv4) {
     return result.insertedId;
   } catch(error) {
     if(error.code === 11000)
-      return error.code;
+      return error;
     console.log(error);
   }
 };
