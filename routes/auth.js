@@ -10,7 +10,8 @@ router.use(express.static('public'));
 
 router.get('/', async (req, res) => {
     if(DEBUG) console.log('login page: ');
-    res.render('login', {status: req.app.locals.status});
+    res.render('login', {status: req.session.status});
+    // res.render('login', {status: req.app.locals.status});
     return;
 });
 
@@ -18,21 +19,22 @@ router.post('/', async (req, res) => {
     try {
         if(DEBUG) console.log('auth.getLoginByUsername().try');
         let user = await getLoginByUsername(req.body.username);
-        if(DEBUG) console.log(`user data: ${user}`);
+        if(DEBUG) console.log(`user data: ${user.username}`);
         if(user === undefined || user === null) {
-            req.app.locals.status = 'Incorrect user name was entered.'
-            if(DEBUG) console.log(req.app.locals.status);
+            req.session.status = 'Incorrect user name was entered.'
+            // req.app.locals.status = 'Incorrect user name was entered.'
+            if(DEBUG) console.log(req.session.status);
             res.redirect('/auth');
             return;
         }
         if( await bcrypt.compare(req.body.password, user.password)) {
-            // change using app.locals to use session or java web token (jwt)
-            req.app.locals.user = user;
-            req.app.locals.status = 'Happy for your return ' + user.username;
+            // change using app.locals to use session or json web token (jwt)
+            req.session.user = user;
+            req.session.status = 'Happy for your return ' + user.username;
             res.redirect('/');
             return;
         } else {
-            req.app.locals.status = 'Incorrect password was entered.'
+            req.session.status = 'Incorrect password was entered.'
             res.redirect('/auth')
             return;
         }
@@ -47,7 +49,7 @@ router.post('/', async (req, res) => {
 
 // from http browser it has /auth/new
 router.get('/new', async (req, res) => {
-    res.render('register', {status: req.app.locals.status});
+    res.render('register', {status: req.session.status});
     return;
 });
 
@@ -79,17 +81,17 @@ router.post('/new', async (req, res) => {
                     constraint = setConstraint(indexName);
                 }
                 if(DEBUG) console.log(`${constraint} already exists, please try another.`);
-                req.app.locals.status = `${constraint} already exists, please try another.`
+                req.session.status = `${constraint} already exists, please try another.`
                 res.redirect('/auth/new')
                 return;
             } else {
-                req.app.locals.status = 'New account created, please login.'
+                req.session.status = 'New account created, please login.'
                 res.redirect('/auth');
                 return;
             }
         } else {
             if(DEBUG) console.log('Not enough form fields completed.');
-            req.app.locals.status = 'Not enough form fields completed.'
+            req.session.status = 'Not enough form fields completed.'
             res.redirect('/auth/new')
             return;
         }       
@@ -104,9 +106,17 @@ router.post('/new', async (req, res) => {
 router.get('/exit', async (req, res) => {
     if(DEBUG) console.log('get /exit');
     // clear out the express-session
-    req.app.locals.status = ' ';
-    res.redirect('/');
-    return;
+    req.session.destroy((err) => {
+        if (err) {
+            // Handle error case
+            console.error("Session destruction error:", err);
+            return res.status(500).send("Could not log out.");
+        } else {
+            // Redirect to home page or login page after successful logout
+            res.redirect('/');
+            return;
+        }
+    });
 });
 
 module.exports = router

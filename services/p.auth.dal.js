@@ -13,7 +13,7 @@ async function getLoginByUsername(username) {
   let SQL = `SELECT * FROM public."Logins" WHERE username = $1`;
   try {
     let results = await dal.query(SQL, [username]);
-    if(DEBUG) console.log(`results after query: ${results.rows[0]}`);
+    if(DEBUG) console.log(`results after query: ${JSON.stringify(results.rows[0])}`);
     return results.rows[0];
   } catch (error) {
     console.log(error);
